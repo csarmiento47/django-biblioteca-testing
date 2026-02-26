@@ -31,18 +31,20 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-
+    'https://django-biblioteca-testing.onrender.com/',
 ]
 
 
-#CORS_ALLOW_ALL_ORIGINS = True    NO RECOMENDADO PARA PRODUCCION, PERMITE CUALQUIER ORIGEN, SOLO USAR EN DESARROLLO 
+CORS_ALLOW_ALL_ORIGINS = True    #NO RECOMENDADO PARA PRODUCCION, PERMITE CUALQUIER ORIGEN, SOLO USAR EN DESARROLLO 
 
+'''
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vue
     "http://localhost:3000",  # React
     "http://127.0.0.1:5500",  # Vanilla JS
     "https://csarmiento47.github.io/frontend-biblioteca",  # GitHub Pages
 ]
+'''
 
 CORS_ALLOW_CREDENTIALS = True
 
