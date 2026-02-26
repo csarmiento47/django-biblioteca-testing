@@ -1,0 +1,196 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+
+{% block title %}Estadísticas{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="mb-4">📊 Estadísticas Biblioteca</h2>
+
+
+    <!-- Métricas -->
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+        <div class="col">
+            <div class="card h-30 shadow text-center">
+                <div class="card-body">
+                    <h6>Total Libros</h6>
+                    <h2>{{ total_libros }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-30 shadow text-center">
+                <div class="card-body">
+                    <h6>Total Autores</h6>
+                    <h2>{{ total_autores }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-30 shadow text-center">
+                <div class="card-body">
+                    <h6>Autor Top</h6>
+                    {% if autor_top %}
+                    <strong>{{ autor_top }}</strong><br>
+                    <span class="text-muted">{{ autor_top.total }} libros</span>
+                    {% else %}
+                    <h2 class="text-muted">Sin datos</h2>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla con métricas -->
+    <div class="row mb-4">
+        <div class="table-responsive col-md-6 mx-auto">
+            <table class="table shadow table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Autor</th>
+                        <th>Promedio págias escritas por libro</th>
+                        <th>Cantidad Libros</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for autor in estadisticas_por_autor %}
+                    <tr>
+                        <td>{{ autor.autor }}</td>
+                        <td class="text-center">
+                            {% if autor.promedio_paginas %}
+                            {{ autor.promedio_paginas | floatformat:0 }}
+                            {% else %}
+                            0
+                            {% endif %}
+                        </td>
+                        <td class="text-center">{{ autor.total_libros }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="row mb-4">
+
+        <!-- Gráfico libros por autor -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="card-title">📊 Libros por autor</h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartAutores"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico libros por idioma -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="card-title">🗺️ Libros por idioma</h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartIdiomas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico libros por años -->
+        <div class="col-md-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="card-title">📈 Libros por Años</h4>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartAños"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    /*Libros por autor*/
+    new Chart(document.getElementById('chartAutores'), {
+        type: 'bar',
+        data: {
+            labels: [{% for a in libros_por_autor %}'{{ a.autor }}',{% endfor %}],
+            datasets: [{
+                label: 'Libros por autor',
+                data: [{% for a in libros_por_autor %}{{ a.total }}, {% endfor %}]
+            }],
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false,
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        },
+    });
+
+    /*Libros por idioma*/
+    new Chart(document.getElementById('chartIdiomas'), {
+        type: 'doughnut',
+        data: {
+            labels: [{% for i in libros_por_idioma %}'{{ i.idioma }}',{% endfor %}],
+            datasets: [{
+                label: 'Libros por idioma',
+                data: [{% for i in libros_por_idioma %}{{ i.total }}, {% endfor %}]
+            }],
+        },
+        options: {
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+        
+        },
+    });
+
+    /*Libros por año*/
+    new Chart(document.getElementById('chartAños'), {
+        type: 'line',
+        data: {
+            labels: [{% for i in libros_por_año %}'{{ i.fecha_publicacion__year }}',{% endfor %}],
+            datasets: [{
+                label: 'Libros por año',
+                data: [{% for i in libros_por_año %}{{ i.total }}, {% endfor %}],
+                fill: false,
+                pointStyle: 'circle',
+                pointRadius: 10,
+                pointHoverRadius: 15
+            }],
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display : false,
+                }
+            },
+        
+        },
+    });
+
+
+
+</script>
+
+{% endblock %}

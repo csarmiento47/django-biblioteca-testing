@@ -1,0 +1,90 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+
+{% block title %}Autores{% endblock %}
+
+{% block content %}
+<div class="container my-4 rounded">
+    <div class="card shadow">
+        <div class="card-header">
+            <h2>Autores</h2>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-2 mb-3">
+                <div class="col">
+                    <input type="text" name="autor" class="form-control" placeholder="Autor">
+                </div>
+                <div class="col">
+                    <input type="text" name="pais" class="form-control" placeholder="País">
+                </div>
+                <div class="col">
+                    <button class="btn btn-outline-secondary">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    {% if user.is_authenticated %}
+                        {% if perms.core.add_autor %}
+                        <a href="{% url 'autor_create' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-person-add"></i>
+                        </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Autor</th>
+                            <th>País</th>
+                            <th colspan="2" class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for autor in autores %}
+                        <tr>
+                            <td>{{autor.autor}}</td>
+                            <td>{{autor.pais}}</td>
+                            <td class="text-center">
+                                <a href="{% url 'autor_detail' autor.id %}" class="btn btn-outline-success btn-sm">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                {% if user.is_authenticated %}
+                                    {% if perms.core.change_autor %}
+                                    <a href="{% url 'autor_update' autor.id %}" class="btn btn-outline-warning btn-sm">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    {% endif %}
+                                    {% if perms.core.delete_autor %}
+                                    <button onclick="eliminar({{ autor.id }})" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function eliminar(id) {
+        Swal.fire({
+            title: '¿Eliminar autor?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/autores/${id}/eliminar/`;
+            }
+        })
+    }
+</script>
+{% endblock %}

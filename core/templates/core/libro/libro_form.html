@@ -1,0 +1,143 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+
+{% block title %}
+{% if object %}Modificar libro{% else %}Nuevo libro{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<div class="container my-4">
+    <h2>{% if object %}✏️ Modificar libro{% else %}➕ Nuevo libro{% endif %}</h2>
+
+    <form action="" method="post" class="card card-body shadow">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                {% for field in form %}
+                {% for error in field.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label for="titulo" class="form-label fw-bold">Título</label>
+            {{ form.titulo }}
+        </div>
+        <div class="mb-3">
+            <label for="fecha_publicacion" class="form-label fw-bold">Fecha Publicación</label>
+            {{ form.fecha_publicacion }}
+        </div>
+        <div class="mb-3">
+            <label for="idioma" class="form-label fw-bold">Idioma</label>
+            {{ form.idioma }}
+        </div>
+        <div class="mb-3">
+            <label for="paginas" class="form-label fw-bold">Nro. Páginas</label>
+            {{ form.paginas }}
+        </div>
+        <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <label for="autores" class="form-label fw-bold">Autores</label>
+                <button type="button" class="btn btn-sm btn-outline-primary mb-1" data-bs-toggle="modal" data-bs-target="#autorModal">➕ Nuevo autor</button>  
+            </div>
+            {{ form.autores }}
+        </div>
+        <div class="d-flex justify-content-center gap-2">
+            <button type="submit" class="btn btn-outline-primary w-25">Guardar</button>
+            <a href="{% url 'libro_list' %}" class="btn btn-outline-secondary w-25">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<!-- Modal AUTOR -->
+<div class="modal fade" id="autorModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">➕ Nuevo autor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="autorForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="autor" class="form-label fw-bold">Autor</label>
+                        <input type="text" class="form-control" name="autor" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="pais" class="form-label fw-bold">País</label>
+                        <input type="text" class="form-control" name="pais" required>
+                    </div>
+
+                    <div id="autorErrors" class="alert alert-danger d-none"></div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarAutor()">Guardar autor</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function guardarAutor() {
+        const form = document.getElementById('autorForm');
+        const data = new FormData(form);
+
+        fetch("{% url 'autor_create_ajax' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': data.get('csrfmiddlewaretoken')
+            },
+            body: data
+
+        })
+        .then(res => res.json())
+        .then(json => {
+            if(json.success) {
+                //agregar el autor al select
+                const select = document.querySelector('#id_autores');
+                const option = new Option(json.nombre , json.id, true, true);
+                select.add(option);
+
+                bootstrap.Modal.getInstance(document.getElementById('autorModal')).hide();
+
+                form.reset();
+                document.getElementById('autorErrors').classList.add('d-none');
+            }
+            else {
+                mostrarErrores(json.errors);
+            }
+        })
+        .catch(() => {
+            mostrarErrores({'__all__': ['Error al guardar autor']});
+        });
+    }
+
+    function mostrarErrores(errors) {
+        const div = document.getElementById('autorErrors');
+        div.innerHTML = '';
+        for (let campo in errors) { 
+            errors[campo].forEach(element => {
+                div.innerHTML += `<div>${element}</div>`;
+            });
+        }
+        div.classList.remove('d-none');
+    }
+</script>
+{% endblock %}

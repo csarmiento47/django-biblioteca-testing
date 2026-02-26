@@ -1,0 +1,50 @@
+#Para conectarse a la shell
+>python manage.py shell
+
+#Para conectar los modelos con la shell
+>>>from core.models import Autor, Libro 
+
+#Para obtener todos los autores...
+>>>autores = Autor.objects.all()
+
+#Para imprimir en pantalla los autores
+>>>print(autores)
+
+#Para obtener todos los libros
+>>>libros = Libro.objects.all()
+
+#Para imprimir en pantalla los libros
+>>>print(libros)
+
+#Para registrar un nuevo autor...
+>>>Autor.objects.create(autor='Julio Verne',nacionalidad='Francés') 
+>>>Autor.objects.create(autor='Neil Gaiman',nacionalidad='Británico')
+>>>Autor.objects.create(autor='Terry Pratchett',nacionalidad='Británico')
+
+#Para registrar un nuevo libro...
+>>>Libro.objects.create(titulo='20.000 leguas de viaje submarino',fecha_publicacion='1869-03-20',idioma='FR')
+>>>Libro.objects.create(titulo='Así habló Zaratustra. Un libro para todos y para nadie',fecha_publicacion='1883-02-01',idioma='DE')
+>>>libro1 = Libro.objects.create(titulo='Buenos presagios',fecha_publicacion='1990-05-10',idioma='EN')
+
+
+#Para asociar libros a autores....
+#Creamos a un autor almacenando el autor creado en una variable...
+>>>autor = Autor.objects.create(autor='R.A. Salvatore',nacionalidad='Norteamericano')
+#Creamos a un libro almacenando el libro creado en una variable...
+>>>libro = Libro.objects.create(titulo='El elfo oscuro: la morada',fecha_publicacion='1990-08-10',idioma='EN')
+#Anexamos al libro el autor....
+>>>libro.autores.add(autor)
+
+#Para asociar un libro a varios autores...
+#Se registran los autores, luego el libro y finalmente se agregan los autores al libro... 
+>>>autor1 = Autor.objects.create(autor='Owen King',nacionalidad='Norteamericano')
+>>>autor2 = Autor.objects.create(autor='Stephen King',nacionalidad='Norteamericano')
+>>>libro1 = Libro.objects.create(titulo='Bellas durmientes',fecha_publicacion='2017-09-26',idioma='EN')
+
+>>>libro1.autores.add(autor1, autor2)
+o
+>>>libro1.autores.set([autor1,autor2]) 
+
+#######################################################################################
+
+

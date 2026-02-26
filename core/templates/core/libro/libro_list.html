@@ -1,0 +1,107 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+
+{% block title %}Libros{% endblock %}
+
+{% block content %}
+<div class="container my-4 rounded">
+    <div class="card shadow">
+        <div class="card-header">
+            <h2>Libros</h2>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-2 mb-3">
+                <div class="col-md-4">
+                    <input type="text" name="titulo" class="form-control" placeholder="Buscar por título" value="{{ request.GET.titulo }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="idioma" id="idioma" class="form-select">
+                        <option value="">-- Idioma --</option>
+                        {% for key, value in form.idioma.field.choices %}
+                        <option value="{{ key }}" {% if request.GET.idioma == key %}selected{% endif %}>{{value}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <button class="btn btn-outline-secondary">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    {% if user.is_authenticated %}
+                        {% if perms.core.add_libro %}
+                        <a href="{% url 'libro_create' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-file-earmark-plus"></i>
+                        </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Título</th>
+                            <th>Idioma</th>
+                            <th>Nro. Páginas</th>
+                            <th>Autores</th>
+                            <th>Publicado</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for libro in libros %}
+                        <tr>
+                            <td>{{ libro.titulo }}</td>
+                            <td>{{ libro.get_idioma_display }}</td>
+                            <td class="text-center">{{ libro.paginas }}</td>
+                            <td>
+                                {% for autor in libro.autores.all %}
+                                <span class="badge bg-secondary">{{ autor.autor }}</span>
+                                {% empty %}
+                                <span class="text-muted">Sin autores</span>
+                                {% endfor %}
+                            </td>
+                            <td>{{ libro.fecha_publicacion }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'libro_detail' libro.id %}" class="btn btn-outline-success btn-sm">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                {% if user.is_authenticated %}
+                                    {% if perms.core.change_libro %}
+                                    <a href="{% url 'libro_update' libro.id %}" class="btn btn-outline-warning btn-sm">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    {% endif %}
+                                    {% if perms.core.delete_libro %}
+                                    <button onclick="eliminar({{ libro.id }})" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function eliminar(id) {
+        Swal.fire({
+            title: '¿Eliminar libro?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/libros/${id}/eliminar/`;
+            }
+        })
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,5 @@
+user: admin
+pass: asdf1234
+
+
+todos los usuarios registrados para ingresar tienen como password: @#Dog2026

@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+.Python
+env/
+venv/
+.venv/
+bin/
+include/
+lib/
+lib64/
+share/
+# PEP 582; used by pdm and others
+__pypackages__/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+media/
+
+# IDEs
+.idea/
+.vscode/
+
+# OS-specific
+.DS_Store

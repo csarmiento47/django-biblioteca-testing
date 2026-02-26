@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+
+    <link rel="shortcut icon" href="{% static 'core/img/book.svg' %}" type="image/x-icon">
+
+    <title>{% block title %}{% endblock %} | Django CBV</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img class="img-logo" src="{% static 'core/img/book.svg' %}" alt="Libros">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'autor_list' %}">Autores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'libro_list' %}">Libros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'estadisticas' %}">Estadísticas</a>
+                    </li>
+                </ul>
+
+                <div class="ms-auto d-flex align-items-center gap-2">
+                    {% if user.is_authenticated %}
+                        <span class="text-light small me-2">
+                            👤 {{ user.username }}
+                        </span>
+                        {% if user.groups.all %}
+                        <span class="badge bg-secondary">
+                            {{ user.groups.first.name | capfirst }}
+                        </span>
+                        {% endif %}
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-warning btn-sm">
+                                Logout
+                            </button>
+                        </form>
+                        
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm">
+                            Login
+                        </a>
+                        <a href="{% url 'registro' %}" class="btn btn-outline-primary btn-sm">
+                            Registro
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <footer class="container-fluid p-5 mt-2 bg-dark text-white">
+        <div class="row text-white text-center">
+            <div class="col-md-4 mb-3">
+                <img class="logo-footer" src="{% static 'core/img/book.svg' %}" alt="Logo Empresa">
+                <p>&copy;2026 - Rocket Inc.</p>
+            </div>
+            <div class="col-md-4 mb-3 text-center">
+                <h4>Mapa del Sitio</h4>
+                <hr class="text-white">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'home' %}" target="_self">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'autor_list' %}" target="_self">Autores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'libro_list' %}" target="_self">Libros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'estadisticas' %}" target="_self">Estadísticas</a>
+                    </li>
+                </ul>
+
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card bg-transparent border border-0">
+                    <div class="card-header border border-0">
+                        <h4 class="card-title text-white">Subscríbete a nuestro newsletter!!!</h4>
+                    </div>
+                    <div class="card-body border border-0">
+                        <div class="input-group">
+                            <input type="email" class="form-control" id="email" name="email"
+                                placeholder="Ingresa tu correo electrónico">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-light" type="submit">Enviar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center border border-0">
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="http://www.facebook.com" target="_blank">
+                                    <i class="bi bi-facebook fs-1 text-white"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://instagram.com" target="_blank">
+                                    <i class="bi bi-instagram fs-1 text-white"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://www.tiktok.com" target="_blank">
+                                    <i class="bi bi-tiktok fs-1 text-white"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="text-white">
+        <div class="row p-2 text-white text-center">
+            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cupiditate, similique tempore. Autem dicta
+                dignissimos quae reprehenderit sequi doloribus. Doloribus, velit?</p>
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {% if messages %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            {% for message in messages %}
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: '{{ message.tags }}' === 'success' ? 'success' : 'info',
+                title: '{{ message }}',
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            {% endfor %}
+        });
+    </script>
+    {% endif %}
+
+    {% block extra_js %}
+    {% endblock %}
+
+</body>
+
+</html>

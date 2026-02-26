@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+
+{% block title %}Iniciar sesión{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center my-5">
+    <div class="col-md-5">
+
+        <div class="card shadow-lg border-0">
+            <div class="card-header">
+                <h4 class="mb-0">🔐 Acceso al sistema</h4>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-center text-muted mb-4">
+                    Ingresa tus credenciales para continuar
+                </p>
+                
+                {% if form.errors %}
+                <div class="alert alert-danger text-center">
+                    Usuario o contraseñas incorrectos
+                </div>
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <input type="hidden" name="next" value="{{ next }}">
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Usuario</label>
+                        <input type="text" name="username" class="form-control" placeholder="Ingrese su usuario">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" name="password" class="form-control" placeholder="Ingrese su contraseña">
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">Ingresar</button>
+                    </div>
+
+                </form>
+
+                <div class="text-center mt-3">
+                    <small class="text-muted">
+                        ¿No tienes cuenta?
+                        <a href="{% url 'registro' %}">Regístrate aquí</a>
+                    </small>
+                </div>
+
+            </div>
+            <div class="card-footer text-center text-muted small">
+                &copy; {{ now|date:'Y' }}  Biblioteca - Acceso restringido
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

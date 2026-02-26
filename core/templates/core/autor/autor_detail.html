@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+
+{% block title %}{{ autor.autor }}{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <div class="card shadow my-4">
+        <div class="card-header">
+            <h2>{{ autor.autor }} ({{ autor.pais }})</h2>
+        </div>
+
+        <div class="card-body">
+            <h4 class="mt-3">📚 Libros escritos</h4>
+
+            <ul class="list-group list-group-flush">
+                {% for libro in autor.libros.all %}
+                <li class="list-group-item">Título: <strong>{{ libro.titulo }}</strong> | Fecha publicación (libro
+                    original): <strong>{{ libro.fecha_publicacion | date:'d/M/Y' }}</strong></li>
+                {% empty %}
+                <li class="list-group-item">No tiene libros registrados</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card-footer text-center">
+            <a class="btn btn-outline-secondary my-2 w-100" href="{% url 'autor_list' %}">Volver</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

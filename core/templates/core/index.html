@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row text-center">
+        <h1>📚 Sistema Biblioteca</h1>
+        <p class="lead">Panel de administración</p>
+    </div>
+
+    <div class="row mt-4">
+        <div class="card-group">
+
+            <div class="card text-center border-0">
+                <a href="{% url 'autor_list' %}" class="text-decoration-none">
+                    <img class="card-img-top" src="{% static 'core/img/writer.svg' %}" alt="">
+                </a>
+                <div class="card-body">
+                    <h5 class="text-muted">Autores</h5>
+                </div>
+            </div>
+
+            <div class="card text-center border-0">
+                <a href="{% url 'libro_list' %}" class="text-decoration-none">
+                    <img class="card-img-top" src="{% static 'core/img/books.svg' %}" alt="">
+                </a>
+                <div class="card-body">
+                    <h5 class="text-muted">Libros</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
